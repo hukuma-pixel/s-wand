@@ -84,12 +84,12 @@ class SpenController {
 
                 when (buttonEvent.action) {
                     ButtonEvent.ACTION_DOWN -> {
-                        Log.d(TAG, "Button pressed")
+                        // Log.d(TAG, "Button pressed")
                         onButtonPressed?.invoke()
                     }
 
                     ButtonEvent.ACTION_UP -> {
-                        Log.d(TAG, "Button released")
+                        // Log.d(TAG, "Button released")
                         onButtonReleased?.invoke()
                     }
                 }
@@ -109,7 +109,7 @@ class SpenController {
                     val x = motionEvent.deltaX
                     val y = motionEvent.deltaY
 
-                    Log.d(TAG, "Motion: X=$x, Y=$y")
+                    // Log.d(TAG, "Motion: X=$x, Y=$y")
                     onAirMotion?.invoke(x, y)
                 }
 

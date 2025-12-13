@@ -1,223 +1,200 @@
 package com.example.swand
 
 import android.os.Bundle
+import android.widget.*
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
-import com.example.swand.ui.theme.SWandTheme
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: PositionViewModel by viewModels()
+
+    private lateinit var viewModel: PatternViewModel
+
+    // UI элементы
+    private lateinit var statusTextView: TextView
+    private lateinit var resultTextView: TextView
+    private lateinit var connectionStatusTextView: TextView
+    private lateinit var connectButton: Button
+    private lateinit var disconnectButton: Button
+    private lateinit var recordingRadioButton: RadioButton
+    private lateinit var recognizingRadioButton: RadioButton
+    private lateinit var idleRadioButton: RadioButton
+    private lateinit var patternNameEditText: EditText
+    private lateinit var saveNameButton: Button
+    private lateinit var patternsListView: ListView
+    private lateinit var recordingIndicator: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Устанавливаем тему перед super.onCreate
+        setTheme(R.style.Theme_SWand)
+
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        setContent {
-            SWandTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen(
-                        viewModel = viewModel,
-                        onConnectClick = { viewModel.connect(this) },
-                        onDisconnectClick = { viewModel.disconnect(this) }
-                    )
-                }
+        // Инициализация ViewModel
+        viewModel = ViewModelProvider(this).get(PatternViewModel::class.java)
+
+        // Инициализация UI элементов
+        initViews()
+        setupListeners()
+        setupObservers()
+    }
+
+    private fun initViews() {
+        statusTextView = findViewById(R.id.statusTextView)
+        resultTextView = findViewById(R.id.resultTextView)
+        connectionStatusTextView = findViewById(R.id.connectionStatusTextView)
+        connectButton = findViewById(R.id.connectButton)
+        disconnectButton = findViewById(R.id.disconnectButton)
+        recordingRadioButton = findViewById(R.id.recordingRadioButton)
+        recognizingRadioButton = findViewById(R.id.recognizingRadioButton)
+        idleRadioButton = findViewById(R.id.idleRadioButton)
+        patternNameEditText = findViewById(R.id.patternNameEditText)
+        saveNameButton = findViewById(R.id.saveNameButton)
+        patternsListView = findViewById(R.id.patternsListView)
+        recordingIndicator = findViewById(R.id.recordingIndicator)
+    }
+
+    private fun setupListeners() {
+        // Кнопки подключения/отключения
+        connectButton.setOnClickListener {
+            viewModel.connect(this)
+            Toast.makeText(this, "Подключение...", Toast.LENGTH_SHORT).show()
+        }
+
+        disconnectButton.setOnClickListener {
+            viewModel.disconnect(this)
+            Toast.makeText(this, "Отключение...", Toast.LENGTH_SHORT).show()
+        }
+
+        // Радиокнопки режима
+        recordingRadioButton.setOnClickListener {
+            viewModel.setMode("record")
+            patternNameEditText.visibility = EditText.VISIBLE
+            saveNameButton.visibility = Button.VISIBLE
+            patternNameEditText.text.clear()
+        }
+
+        recognizingRadioButton.setOnClickListener {
+            viewModel.setMode("recognize")
+            patternNameEditText.visibility = EditText.GONE
+            saveNameButton.visibility = Button.GONE
+        }
+
+        idleRadioButton.setOnClickListener {
+            viewModel.setMode("idle")
+            patternNameEditText.visibility = EditText.GONE
+            saveNameButton.visibility = Button.GONE
+        }
+
+        // Кнопка сохранения имени
+        saveNameButton.setOnClickListener {
+            val name = patternNameEditText.text.toString().trim()
+            if (name.isNotEmpty()) {
+                viewModel.setPatternName(name)
+                Toast.makeText(this, "Имя установлено", Toast.LENGTH_SHORT).show()
+                patternNameEditText.text.clear()
+            } else {
+                Toast.makeText(this, "Введите имя", Toast.LENGTH_SHORT).show()
             }
         }
     }
-}
 
-@Composable
-fun MainScreen(
-    viewModel: PositionViewModel,
-    onConnectClick: () -> Unit,
-    onDisconnectClick: () -> Unit
-) {
-    val isConnected by viewModel.isConnected.observeAsState(false)
-    val isButtonPressed by viewModel.isButtonPressed.observeAsState(false)
-    val currentPosition by viewModel.currentPosition.observeAsState(Pair(0f, 0f))
-    val drawingPath by viewModel.drawingPath.observeAsState(emptyList())
+    private fun setupObservers() {
+        // Статус подключения
+        viewModel.isConnected.observe(this, Observer { isConnected ->
+            if (isConnected) {
+                connectionStatusTextView.text = "Подключено ✓"
+                connectionStatusTextView.setTextColor(resources.getColor(android.R.color.holo_green_dark))
+                connectButton.isEnabled = false
+                disconnectButton.isEnabled = true
+            } else {
+                connectionStatusTextView.text = "Отключено ✗"
+                connectionStatusTextView.setTextColor(resources.getColor(android.R.color.holo_red_dark))
+                connectButton.isEnabled = true
+                disconnectButton.isEnabled = false
+            }
+        })
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Button(
-            onClick = {
-                if (isConnected) {
-                    onDisconnectClick()
-                } else {
-                    onConnectClick()
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(if (isConnected) "Disconnect" else "Connect to S Pen")
-        }
+        // Статус
+        viewModel.status.observe(this, Observer { status ->
+            statusTextView.text = status
+        })
 
-        Text(
-            text = "Status: ${if (isConnected) "Connected" else "Disconnected"}",
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        // Результат
+        viewModel.result.observe(this, Observer { result ->
+            resultTextView.text = result
+            updateResultColor(result)
+        })
 
-        Text(
-            text = "Button: ${if (isButtonPressed) "PRESSED" else "Released"}",
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        // Состояние кнопки S-Pen
+        viewModel.isButtonPressed.observe(this, Observer { isPressed ->
+            if (isPressed) {
+                recordingIndicator.visibility = TextView.VISIBLE
+            } else {
+                recordingIndicator.visibility = TextView.GONE
+            }
+        })
 
-        Text(
-            text = "Position: X=${currentPosition.first}, Y=${currentPosition.second}",
-            modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
-        )
+        // Режим
+        viewModel.mode.observe(this, Observer { mode ->
+            updateModeUI(mode)
+        })
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(top = 16.dp)
-        ) {
-            DrawingGrid(
-                currentPosition = currentPosition,
-                drawingPath = drawingPath,
-                isButtonPressed = isButtonPressed,
-                modifier = Modifier.fillMaxSize()
-            )
+        // Список паттернов
+        viewModel.patterns.observe(this, Observer { patterns ->
+            // Паттерны уже содержат информацию о direction и weight
+            // благодаря изменениям в ViewModel
+            updatePatternsList(patterns)
+        })
+    }
+
+    private fun updateResultColor(result: String) {
+        when {
+            result == "Неизвестный паттерн" ->
+                resultTextView.setTextColor(resources.getColor(android.R.color.holo_red_dark))
+            result.startsWith("Сохранено") || result.startsWith("Распознан") ->
+                resultTextView.setTextColor(resources.getColor(android.R.color.holo_green_dark))
+            else ->
+                resultTextView.setTextColor(resources.getColor(android.R.color.black))
         }
     }
-}
 
-@Composable
-fun DrawingGrid(
-    currentPosition: Pair<Float, Float>,
-    drawingPath: List<Pair<Float, Float>>,
-    isButtonPressed: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-        ) {
-            val centerX = size.width / 2
-            val centerY = size.height / 2
-            val scale = 70f // Увеличиваем масштаб для лучшего отображения
-
-            // Рисуем сетку с меньшим шагом для эффекта "приближения"
-            val gridSize = 10.dp.toPx() // Уменьшаем шаг сетки
-            val gridColor = Color.LightGray.copy(alpha = 0.5f)
-
-            // Вертикальные линии
-            for (x in 0 until (size.width / gridSize).toInt() + 1) {
-                val lineX = x * gridSize
-                drawLine(
-                    color = gridColor,
-                    start = Offset(lineX, 0f),
-                    end = Offset(lineX, size.height),
-                    strokeWidth = 1f
-                )
+    private fun updateModeUI(mode: String) {
+        when (mode) {
+            "record" -> {
+                recordingRadioButton.isChecked = true
+                patternNameEditText.visibility = EditText.VISIBLE
+                saveNameButton.visibility = Button.VISIBLE
             }
-
-            // Горизонтальные линии
-            for (y in 0 until (size.height / gridSize).toInt() + 1) {
-                val lineY = y * gridSize
-                drawLine(
-                    color = gridColor,
-                    start = Offset(0f, lineY),
-                    end = Offset(size.width, lineY),
-                    strokeWidth = 1f
-                )
+            "recognize" -> {
+                recognizingRadioButton.isChecked = true
+                patternNameEditText.visibility = EditText.GONE
+                saveNameButton.visibility = Button.GONE
             }
-
-            // Центральные оси (более заметные)
-            drawLine(
-                color = Color.Gray,
-                start = Offset(centerX, 0f),
-                end = Offset(centerX, size.height),
-                strokeWidth = 3f
-            )
-
-            drawLine(
-                color = Color.Gray,
-                start = Offset(0f, centerY),
-                end = Offset(size.width, centerY),
-                strokeWidth = 3f
-            )
-
-            // Рисуем путь движения (всегда, даже после отпускания кнопки)
-            if (drawingPath.isNotEmpty()) {
-                val pathPoints = drawingPath.map { point ->
-                    Offset(
-                        centerX + point.first * scale,
-                        centerY - point.second * scale
-                    )
-                }
-
-                // Рисуем линии между точками
-                for (i in 0 until pathPoints.size - 1) {
-                    drawLine(
-                        color = if (isButtonPressed) Color.Blue else Color.Blue.copy(alpha = 0.7f),
-                        start = pathPoints[i],
-                        end = pathPoints[i + 1],
-                        strokeWidth = if (isButtonPressed) 4f else 3f
-                    )
-                }
-
-                // Рисуем точки пути
-                for (point in pathPoints) {
-                    drawCircle(
-                        color = if (isButtonPressed) Color.Blue else Color.Blue.copy(alpha = 0.5f),
-                        radius = if (isButtonPressed) 4f else 3f,
-                        center = point
-                    )
-                }
+            "idle" -> {
+                idleRadioButton.isChecked = true
+                patternNameEditText.visibility = EditText.GONE
+                saveNameButton.visibility = Button.GONE
             }
+        }
+    }
 
-            // Рисуем текущую позицию только если кнопка нажата
-            if (isButtonPressed) {
-                val currentPoint = Offset(
-                    centerX + currentPosition.first * scale,
-                    centerY - currentPosition.second * scale
-                )
+    private fun updatePatternsList(patterns: List<String>) {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, patterns)
+        patternsListView.adapter = adapter
 
-                drawCircle(
-                    color = Color.Red,
-                    radius = 10f,
-                    center = currentPoint,
-                    style = Stroke(width = 3f)
-                )
+        patternsListView.setOnItemClickListener { _, _, position, _ ->
+            val patternName = patterns[position]
+            Toast.makeText(this, "Выбран: $patternName", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-                drawCircle(
-                    color = Color.Red.copy(alpha = 0.5f),
-                    radius = 8f,
-                    center = currentPoint
-                )
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        // Отключаем S-Pen при закрытии приложения
+        if (viewModel.isConnected.value == true) {
+            viewModel.disconnect(this)
         }
     }
 }
