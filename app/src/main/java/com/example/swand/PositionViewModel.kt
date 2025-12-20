@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.swand.patterns.*
 import kotlinx.coroutines.launch
+import android.util.Log
 
 class PatternViewModel(application: Application) : AndroidViewModel(application) {
     private val spenController = SpenController()
@@ -40,6 +41,8 @@ class PatternViewModel(application: Application) : AndroidViewModel(application)
     private val recordedShifts = mutableListOf<Shift>()
     private val savedPatterns = mutableMapOf<String, Pattern>()
     private var currentPatternName = ""
+
+    private val TAG = "ViewModelMatcher"
 
     init {
         spenController.init()
@@ -131,11 +134,16 @@ class PatternViewModel(application: Application) : AndroidViewModel(application)
             }
             "recognize" -> {
                 var foundPattern: String? = null
+                var maxSimilarity: Float = 0f
+
                 for ((name, savedPattern) in savedPatterns) {
-                    if (patternMatcher.match(pattern, savedPattern)) {
+                    val similarity = patternMatcher.match(pattern, savedPattern)
+                    if (similarity > maxSimilarity) {
+                        maxSimilarity = similarity
                         foundPattern = name
-                        break
                     }
+
+                    Log.d(TAG, "Most similar pattern: $foundPattern with similarity: $maxSimilarity")
                 }
 
                 if (foundPattern != null) {

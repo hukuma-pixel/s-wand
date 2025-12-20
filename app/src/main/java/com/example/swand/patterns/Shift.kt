@@ -7,12 +7,6 @@ data class Shift(
     val dx: Float = 0f,
     val dy: Float = 0f
 ) {
-
-    val magnitude: Float by lazy {
-        sqrt(dx * dx + dy * dy)
-    }
-
-    val angle: Float by lazy {
-        atan2(dy, dx)
-    }
+    val magnitude: Float = sqrt(dx * dx + dy * dy)
+    val angle: Float = atan2(dy, dx)
 }

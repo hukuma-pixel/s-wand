@@ -10,7 +10,6 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var viewModel: PatternViewModel
 
-    // UI элементы
     private lateinit var statusTextView: TextView
     private lateinit var resultTextView: TextView
     private lateinit var connectionStatusTextView: TextView
