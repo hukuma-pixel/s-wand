@@ -69,11 +69,20 @@ class SpenController {
     }
 
     fun checkFeatures(): Pair<Boolean, Boolean> {
-        return Pair(
-            spenRemote?.isFeatureEnabled(FEATURE_TYPE_BUTTON) ?: false,
-            spenRemote?.isFeatureEnabled(FEATURE_TYPE_AIR_MOTION) ?: false
-        )
+        return try {
+            Pair(
+                spenRemote?.isFeatureEnabled(FEATURE_TYPE_BUTTON) ?: false,
+                spenRemote?.isFeatureEnabled(FEATURE_TYPE_AIR_MOTION) ?: false
+            )
+        } catch (e: NoClassDefFoundError) {
+            Log.e(TAG, "Error checking features due to missing Samsung classes: ${e.message}")
+            Pair(false, false)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking features: ${e.message}")
+            Pair(false, false)
+        }
     }
+
 
     fun listenToButton() {
         spenUnitManager?.let { manager ->

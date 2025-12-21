@@ -34,8 +34,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        jvmToolchain(11)
     }
     buildFeatures {
         compose = true
@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation(fileTree("libs") { include("*.jar") })
 
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.gson)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
