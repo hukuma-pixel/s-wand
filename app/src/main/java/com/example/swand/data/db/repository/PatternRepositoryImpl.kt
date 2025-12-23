@@ -1,18 +1,21 @@
-package com.example.swand.domian
+package com.example.swand.data.db.repository
 
-import com.example.swand.data.db.PatternDao
-import com.example.swand.data.db.PatternEntity
-import com.example.swand.data.db.PatternNameEntity
-import com.example.swand.patterns.Pattern
-import com.example.swand.patterns.PatternName
-import com.example.swand.patterns.PatternSegment
+import com.example.swand.data.db.dao.PatternDao
+import com.example.swand.data.db.entity.PatternEntity
+import com.example.swand.data.db.entity.PatternNameEntity
+import com.example.swand.domian.models.Pattern
+import com.example.swand.domian.models.PatternName
+import com.example.swand.domian.models.PatternSegment
+import com.example.swand.domian.repository.PatternRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class PatternRepository(private val patternDao: PatternDao) {
+class PatternRepositoryImpl(
+    private val patternDao: PatternDao
+) : PatternRepository {
     private val gson = Gson()
 
-    suspend fun savePatternPair(
+    override suspend fun savePatternPair(
         patternName: PatternName,
         pattern: Pattern
     ): Boolean {
@@ -30,7 +33,7 @@ class PatternRepository(private val patternDao: PatternDao) {
         }
     }
 
-    suspend fun getAllPatterns(): List<Pair<PatternName, Pattern>> {
+    override suspend fun getAllPatterns(): List<Pair<PatternName, Pattern>> {
         return patternDao.getPatternsWithNames().map { patternWithName ->
             val segments = gson.fromJson<List<PatternSegment>>(
                 patternWithName.pattern.segmentsJson,
@@ -42,7 +45,7 @@ class PatternRepository(private val patternDao: PatternDao) {
         }
     }
 
-    suspend fun getPatternByName(name: String): Pair<PatternName, Pattern>? {
+    override suspend fun getPatternByName(name: String): Pair<PatternName, Pattern>? {
         val patternName = patternDao.getPatternName(name) ?: return null
         val patternEntity = patternDao.getPattern(name) ?: return null
 
@@ -54,7 +57,7 @@ class PatternRepository(private val patternDao: PatternDao) {
         return PatternName(patternName.name) to Pattern(segments)
     }
 
-    suspend fun updatePattern(patternName: String, pattern: Pattern): Boolean {
+    override suspend fun updatePattern(patternName: String, pattern: Pattern): Boolean {
         try {
             val patternEntity = patternDao.getPattern(patternName)
                 ?: return false
@@ -70,7 +73,7 @@ class PatternRepository(private val patternDao: PatternDao) {
         }
     }
 
-    suspend fun deletePatternPair(patternName: String): Boolean {
+    override suspend fun deletePatternPair(patternName: String): Boolean {
         return try {
             patternDao.deletePatternPair(patternName)
             true

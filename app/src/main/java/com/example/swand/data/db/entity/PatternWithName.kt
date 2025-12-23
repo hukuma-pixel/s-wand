@@ -1,4 +1,4 @@
-package com.example.swand.data.db
+package com.example.swand.data.db.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation

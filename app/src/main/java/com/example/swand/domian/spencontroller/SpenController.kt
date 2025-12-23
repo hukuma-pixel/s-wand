@@ -1,10 +1,13 @@
-package com.example.swand
+package com.example.swand.domian.spencontroller
 
 import android.content.Context
 import android.util.Log
-import com.samsung.android.sdk.penremote.*
-import com.samsung.android.sdk.penremote.SpenRemote.FEATURE_TYPE_AIR_MOTION
-import com.samsung.android.sdk.penremote.SpenRemote.FEATURE_TYPE_BUTTON
+import com.samsung.android.sdk.penremote.AirMotionEvent
+import com.samsung.android.sdk.penremote.ButtonEvent
+import com.samsung.android.sdk.penremote.SpenEventListener
+import com.samsung.android.sdk.penremote.SpenRemote
+import com.samsung.android.sdk.penremote.SpenUnit
+import com.samsung.android.sdk.penremote.SpenUnitManager
 
 class SpenController {
 
@@ -71,8 +74,8 @@ class SpenController {
     fun checkFeatures(): Pair<Boolean, Boolean> {
         return try {
             Pair(
-                spenRemote?.isFeatureEnabled(FEATURE_TYPE_BUTTON) ?: false,
-                spenRemote?.isFeatureEnabled(FEATURE_TYPE_AIR_MOTION) ?: false
+                spenRemote?.isFeatureEnabled(SpenRemote.FEATURE_TYPE_BUTTON) ?: false,
+                spenRemote?.isFeatureEnabled(SpenRemote.FEATURE_TYPE_AIR_MOTION) ?: false
             )
         } catch (e: NoClassDefFoundError) {
             Log.e(TAG, "Error checking features due to missing Samsung classes: ${e.message}")

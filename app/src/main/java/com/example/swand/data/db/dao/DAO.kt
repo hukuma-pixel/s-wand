@@ -1,4 +1,4 @@
-package com.example.swand.data.db
+package com.example.swand.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,10 +6,12 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Delete
+import com.example.swand.data.db.entity.PatternWithName
+import com.example.swand.data.db.entity.PatternEntity
+import com.example.swand.data.db.entity.PatternNameEntity
 
 @Dao
 interface PatternDao {
-    // PatternName операции
     @Insert
     suspend fun insertPatternName(patternName: PatternNameEntity): Long
 
@@ -35,7 +37,6 @@ interface PatternDao {
     @Query("DELETE FROM patterns WHERE patternName = :patternName")
     suspend fun deletePattern(patternName: String)
 
-    // Комбинированные операции
     @Transaction
     @Query("SELECT * FROM pattern_names")
     suspend fun getPatternsWithNames(): List<PatternWithName>

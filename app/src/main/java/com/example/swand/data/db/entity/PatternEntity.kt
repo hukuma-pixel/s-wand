@@ -1,6 +1,7 @@
-package com.example.swand.data.db
+package com.example.swand.data.db.entity
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pattern_names")
@@ -12,11 +13,11 @@ data class PatternNameEntity(
 @Entity(
     tableName = "patterns",
     foreignKeys = [
-        androidx.room.ForeignKey(
+        ForeignKey(
             entity = PatternNameEntity::class,
             parentColumns = ["name"],
             childColumns = ["patternName"],
-            onDelete = androidx.room.ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )

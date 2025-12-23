@@ -1,6 +1,7 @@
-package com.example.swand.patterns
+package com.example.swand.domian.patterns
 
-import android.util.Log
+import com.example.swand.domian.models.Direction
+import com.example.swand.domian.models.Shift
 import kotlin.math.PI
 import kotlin.math.abs
 

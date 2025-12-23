@@ -1,8 +1,8 @@
-package com.example.swand.data.db
+package com.example.swand.data.db.converter
 
 import androidx.room.TypeConverter
-import com.example.swand.patterns.Direction
-import com.example.swand.patterns.PatternSegment
+import com.example.swand.domian.models.Direction
+import com.example.swand.domian.models.PatternSegment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

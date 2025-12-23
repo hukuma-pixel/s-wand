@@ -1,6 +1,10 @@
-package com.example.swand.patterns
+package com.example.swand.domian.patterns.impl
 
 import android.util.Log
+import com.example.swand.domian.models.Direction
+import com.example.swand.domian.models.Pattern
+import com.example.swand.domian.models.PatternSegment
+import com.example.swand.domian.patterns.PatternMatcher
 import kotlin.math.abs
 import kotlin.math.exp
 import kotlin.math.max
@@ -16,12 +20,12 @@ data class PatternMatcherConfig(
     val useDynamicTimeWarping: Boolean = false
 )
 
-class PatternMatcher(
+class PatternMatcherImpl(
     private val config: PatternMatcherConfig = PatternMatcherConfig()
-) {
+) : PatternMatcher {
     private val TAG = "PatternMatcher"
 
-    fun match(pattern1: Pattern, pattern2: Pattern): Float {
+    override fun match(pattern1: Pattern, pattern2: Pattern): Float {
         Log.d(TAG, "Comparing patterns: ${pattern1.segments.size} vs ${pattern2.segments.size}")
 
         if (pattern1.segments.isEmpty() && pattern2.segments.isEmpty()) {

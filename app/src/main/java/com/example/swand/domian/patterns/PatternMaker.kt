@@ -1,11 +1,14 @@
-package com.example.swand.patterns
+package com.example.swand.domian.patterns
 
-import android.util.Log
+import com.example.swand.domian.models.Direction
+import com.example.swand.domian.models.Pattern
+import com.example.swand.domian.models.PatternSegment
+import com.example.swand.domian.models.Shift
 import kotlin.math.abs
 
 data class PatternMakerConfig(
-    val minShiftMagnitude: Float = 0.02f,
-    val minSegmentWeight: Float = 0.03f,
+    val minShiftMagnitude: Float = 0.0001f,
+    val minSegmentWeight: Float = 0.01f,
     val noiseFilterThreshold: Float = 0.5f,
     val mergeSimilarDirections: Boolean = true
 )

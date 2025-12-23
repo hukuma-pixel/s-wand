@@ -1,4 +1,4 @@
-package com.example.swand.patterns
+package com.example.swand.domian.models
 
 import kotlin.math.atan2
 import kotlin.math.sqrt

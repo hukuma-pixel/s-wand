@@ -1,4 +1,4 @@
-package com.example.swand.patterns
+package com.example.swand.domian.models
 
 data class PatternName(
     val name: String

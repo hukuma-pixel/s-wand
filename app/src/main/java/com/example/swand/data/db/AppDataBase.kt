@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.swand.data.db.converter.Converters
+import com.example.swand.data.db.dao.PatternDao
+import com.example.swand.data.db.entity.PatternEntity
+import com.example.swand.data.db.entity.PatternNameEntity
 
 @Database(
     entities = [PatternNameEntity::class, PatternEntity::class],
