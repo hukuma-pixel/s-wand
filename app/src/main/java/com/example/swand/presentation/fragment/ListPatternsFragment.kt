@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.swand.R
 import com.example.swand.presentation.viewmodel.PatternViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -28,12 +30,12 @@ fun ListPatternsFragment(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("List Patterns") },
+                title = { Text(stringResource(R.string.title_list_patterns_fragment)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController?.navigateUp()
+                        navController.navigateUp()
                     }) {
-                        Text("Back")
+                        Text(stringResource(R.string.back_list_fragment))
                     }
                 }
             )
@@ -53,7 +55,7 @@ fun ListPatternsFragment(
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
-                            onClick = {  },
+                            onClick = { },
                             onLongClick = {
                                 patternToDelete = patternName
                                 showDeleteDialog = true
@@ -87,8 +89,13 @@ fun ListPatternsFragment(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Deleting") },
-            text = { Text("Do you want to delete '$patternToDelete'?") },
+            title = { Text(stringResource(R.string.deleting_list_fragment)) },
+            text = { Text(
+                stringResource(
+                    R.string.do_you_want_to_delete_list_fragment,
+                    patternToDelete
+                )
+            ) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -96,14 +103,14 @@ fun ListPatternsFragment(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete_button_list_fragment))
                 }
             },
             dismissButton = {
                 OutlinedButton(
                     onClick = { showDeleteDialog = false }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel_button_list_fragment))
                 }
             }
         )

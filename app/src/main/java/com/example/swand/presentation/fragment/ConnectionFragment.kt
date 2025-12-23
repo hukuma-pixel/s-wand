@@ -7,9 +7,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.swand.R
 import com.example.swand.presentation.viewmodel.PatternViewModel
 
 @Composable
@@ -44,14 +46,16 @@ fun ConnectionFragment(
                 .fillMaxWidth(0.8f)
                 .padding(bottom = 16.dp)
         ) {
-            Text(text = if (isConnected) "Connected" else "Connect S Pen")
+            Text(text = if (isConnected) stringResource(R.string.connected_connection_fragment)
+            else stringResource(R.string.wait_connect_connection_fragment)
+            )
         }
 
         Text(
             text = status,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = if (status?.contains("Error", ignoreCase = true) == true)
+            color = if (status.contains("Error", ignoreCase = true))
                 MaterialTheme.colorScheme.error
             else
                 MaterialTheme.colorScheme.onSurface,

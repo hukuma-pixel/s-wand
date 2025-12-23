@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">S Wand</string>
+    <string name="connected_connection_fragment">Connected</string>
+    <string name="wait_connect_connection_fragment">Connect S Pen</string>
+    <string name="title_list_patterns_fragment">List Patterns</string>
+    <string name="back_list_fragment">Back</string>
+    <string name="deleting_list_fragment">Deleting</string>
+    <string name="do_you_want_to_delete_list_fragment">Do you want to delete \'%1$s\'?</string>
+    <string name="delete_button_list_fragment">Delete</string>
+    <string name="cancel_button_list_fragment">Cancel</string>
+    <string name="list_button_pattern_fragment">List</string>
+    <string name="connected_state_pattern_fragment">Connected ✓</string>
+    <string name="disconnected_state_pattern_fragment">Disconnected ✗</string>
+    <string name="detected_state_pattern_fragment">Recognized:</string>
+    <string name="saved_state_pattern_fragment">Saved</string>
+    <string name="instuction_pattern_fragment">Press S Pen button and move it</string>
+    <string name="pattern_name_lable_pattern_fragment">Pattern name</string>
+    <string name="enter_name_lable_pattern_fragment">Enter name</string>
+    <string name="write_button_mode">Write</string>
+    <string name="read_button_mode">Read</string>
+    <string name="wait_button_mode">Wait</string>
+    <string name="listening_motions_indicate">Listening motions...</string>
+    <string name="s_pen_connected_VM">S-Pen connected</string>
+    <string name="s_pen_disconnected_VM">S-Pen disconnected</string>
+    <string name="connection_error_VM">Connection error: %1$d</string>
+    <string name="recording_started_move_s_pen_VM">Recording started. Move S-Pen.</string>
+    <string name="recording_finished_VM">Recording finished.</string>
+    <string name="error_loading_patterns_VM">Error loading patterns: %1$s</string>
+    <string name="pattern_is_empty_VM">Pattern is empty</string>
 </resources>

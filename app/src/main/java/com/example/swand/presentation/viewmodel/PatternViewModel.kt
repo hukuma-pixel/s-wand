@@ -170,15 +170,10 @@ class PatternViewModel(
         val recognitionResult = recognizePatternUseCase(pattern)
 
         if (recognitionResult.isRecognized) {
-            val similarityFormatted = String.format("%.2f", recognitionResult.similarityScore)
-            _result.value = "Recognized: ${recognitionResult.recognizedPattern} " +
-                    "(similarity: $similarityFormatted)"
+            _result.value = "Recognized: ${recognitionResult.recognizedPattern} "
             _status.value = "Pattern recognized"
         } else {
-            val maxSimilarity = recognitionResult.allSimilarities
-                .maxByOrNull { it.second }?.second ?: 0f
-            val maxSimilarityFormatted = String.format("%.2f", maxSimilarity)
-            _result.value = "Unknown pattern (max similarity: $maxSimilarityFormatted)"
+            _result.value = "Unknown pattern"
             _status.value = "Pattern not recognized"
         }
     }
@@ -238,11 +233,6 @@ class PatternViewModel(
                 _result.value = "Delete failed"
             }
         }
-    }
-
-    fun clearRecordedShifts() {
-        recordedShifts.clear()
-        _status.value = "Recorded shifts cleared"
     }
 
     override fun onCleared() {

@@ -7,9 +7,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.swand.R
 import com.example.swand.presentation.viewmodel.PatternViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +62,7 @@ fun PatternFragment(
                 title = { Text("S Wand") },
                 actions = {
                     IconButton(onClick = { navController.navigate("list_patterns_fragment") }) {
-                        Text("List")
+                        Text(stringResource(R.string.list_button_pattern_fragment))
                     }
                 }
             )
@@ -75,7 +77,8 @@ fun PatternFragment(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = if (isConnected) "Connected ✓" else "Disconnected ✗",
+                text = if (isConnected) stringResource(R.string.connected_state_pattern_fragment)
+                else stringResource(R.string.disconnected_state_pattern_fragment),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isConnected) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.error,
@@ -92,9 +95,9 @@ fun PatternFragment(
                         .padding(bottom = 16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = when {
-                            recognitionResult.startsWith("Detected:") ->
+                            recognitionResult.startsWith("Recognized:") ->
                                 MaterialTheme.colorScheme.primaryContainer
-                            recognitionResult == "Saved" ->
+                            recognitionResult == stringResource(R.string.saved_state_pattern_fragment) ->
                                 MaterialTheme.colorScheme.tertiaryContainer
                             else ->
                                 MaterialTheme.colorScheme.errorContainer
@@ -111,7 +114,7 @@ fun PatternFragment(
             }
 
             Text(
-                text = "Press S Pen button and move it",
+                text = stringResource(R.string.instuction_pattern_fragment),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -126,8 +129,8 @@ fun PatternFragment(
                         patternNameInput = it
                         viewModel.setPatternName(it)
                     },
-                    label = { Text("Pattern name") },
-                    placeholder = { Text("Enter name") },
+                    label = { Text(stringResource(R.string.pattern_name_lable_pattern_fragment)) },
+                    placeholder = { Text(stringResource(R.string.enter_name_lable_pattern_fragment)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -146,7 +149,7 @@ fun PatternFragment(
                         viewModel.setMode("record")
                         recognitionResult = ""
                     },
-                    label = { Text("Write") },
+                    label = { Text(stringResource(R.string.write_button_mode)) },
                     modifier = Modifier.weight(1f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
@@ -160,7 +163,7 @@ fun PatternFragment(
                         recognitionResult = ""
                         patternNameInput = ""
                     },
-                    label = { Text("Read") },
+                    label = { Text(stringResource(R.string.read_button_mode)) },
                     modifier = Modifier.weight(1f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
@@ -174,7 +177,7 @@ fun PatternFragment(
                         recognitionResult = ""
                         patternNameInput = ""
                     },
-                    label = { Text("Wait") },
+                    label = { Text(stringResource(R.string.wait_button_mode)) },
                     modifier = Modifier.weight(1f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -189,7 +192,7 @@ fun PatternFragment(
                 ) {
                     CircularProgressIndicator()
                     Text(
-                        text = "Listening motions...",
+                        text = stringResource(R.string.listening_motions_indicate),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 8.dp)
                     )

@@ -24,7 +24,6 @@ interface PatternDao {
     @Delete
     suspend fun deletePatternName(patternName: PatternNameEntity)
 
-    // Pattern операции
     @Insert
     suspend fun insertPattern(pattern: PatternEntity): Long
 

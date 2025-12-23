@@ -19,19 +19,14 @@ abstract class PatternDatabase : RoomDatabase() {
     abstract fun patternDao(): PatternDao
 
     companion object {
-        @Volatile
         private var INSTANCE: PatternDatabase? = null
 
         fun getDatabase(context: Context): PatternDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+            return INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     PatternDatabase::class.java,
                     "pattern_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
+                ).build().also { INSTANCE = it }
         }
     }
 }
